@@ -35,7 +35,6 @@ All notable changes to this project will be documented in this file.
 ### Notes
 
 - Slider values reach the scripts as floats and are cast to integers with `)i` wherever a count is computed.
-
 - Replaces Xenon Hell and AI Xenon Miners, which patch the same nodes of `interrupt.attacked.xml` and, in Xenon Hell's case, the same jobs and wares. The ship buffs Xenon Hell also carried (P laser damage, M travel engine thrust, miner hull) are not included.
 - The destroyer's resources are half of the 9.00 recipe, not Xenon Hell's numbers, which were half of the 4.0 one.
 
