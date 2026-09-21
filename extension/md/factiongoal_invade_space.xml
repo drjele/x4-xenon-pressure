@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- Scales the strength an invasion gathers before it moves and the ceiling it may request up to. Both are goal locals, recomputed on every evaluation. -->
+    <add sel="//cue[@name='EvaluateState']/actions//set_value[@name='$MaximumStrength']" pos="after">
+        <do_if value="$Faction == faction.xenon">
+            <set_value name="$DrJeleFleetSize" exact="if global.$DrJeleXenonFleetSize? then global.$DrJeleXenonFleetSize else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$FleetSize else 100)"/>
+            <set_value name="$MinimumStrength" exact="($MinimumStrength * $DrJeleFleetSize) / 100"/>
+            <set_value name="$MaximumStrength" exact="($MaximumStrength * $DrJeleFleetSize) / 100"/>
+            <debug_text text="'DrJele Xenon Pressure: invasion of %s wants strength %s to %s (fleet size %s)'.[$Target.knownname, $MinimumStrength, $MaximumStrength, $DrJeleFleetSize]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+        </do_if>
+    </add>
+
+    <!-- The share of each invasion group that may be newly built rather than commandeered; vanilla is a quarter, in both the staging and the beachhead phase. -->
+    <replace sel="//cue[@name='EvaluateState']/actions//do_if[@value=&quot;$Phase == 'prepare_for_invasion'&quot;]//set_value[@name='$NewSubgoalTable.$RequestStrengthAllowance'][@comment='Quarter of the forces can be requested to be built']/@exact">($NewSubgoalTable.$DesiredShipStrength * (if $Faction == faction.xenon then (if global.$DrJeleXenonBuildShare? then global.$DrJeleXenonBuildShare else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildShare else 25)) else 25)) / 100</replace>
+    <replace sel="//cue[@name='EvaluateState']/actions//do_elseif[@value=&quot;$Phase == 'beachhead'&quot;]//set_value[@name='$NewSubgoalTable.$RequestStrengthAllowance'][@comment='Quarter of the forces can be requested to be built']/@exact">($NewSubgoalTable.$DesiredShipStrength * (if $Faction == faction.xenon then (if global.$DrJeleXenonBuildShare? then global.$DrJeleXenonBuildShare else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildShare else 25)) else 25)) / 100</replace>
+
+</diff>

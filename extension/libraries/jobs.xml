@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- Every galaxy quota stays at or below its maxgalaxy (default twice galaxy); above it the job engine spawns and culls in a loop. -->
+
+    <!-- vanilla galaxy 56, cluster 8 -->
+    <replace sel="//job[@id='xenon_free_miner_m_mineral']/quota/@galaxy">100</replace>
+    <replace sel="//job[@id='xenon_free_miner_m_mineral']/quota/@cluster">18</replace>
+
+    <!-- vanilla galaxy 36, cluster 6 -->
+    <replace sel="//job[@id='xenon_free_miner_m_mineral_local']/quota/@galaxy">64</replace>
+    <replace sel="//job[@id='xenon_free_miner_m_mineral_local']/quota/@cluster">11</replace>
+
+    <!-- vanilla galaxy 42, cluster 6 -->
+    <replace sel="//job[@id='xenon_free_trader_m_energy']/quota/@galaxy">90</replace>
+    <replace sel="//job[@id='xenon_free_trader_m_energy']/quota/@cluster">12</replace>
+
+    <!-- vanilla galaxy 1, maxgalaxy 1 -->
+    <replace sel="//job[@id='xenon_carrier_patrol_xl_border_cluster']/quota/@galaxy">5</replace>
+    <replace sel="//job[@id='xenon_carrier_patrol_xl_border_cluster']/quota/@maxgalaxy">5</replace>
+
+    <!-- vanilla galaxy 2, sector 1 -->
+    <replace sel="//job[@id='xenon_carrier_patrol_xl_zone_defence']/quota/@galaxy">5</replace>
+
+    <!-- vanilla galaxy 6, maxgalaxy 18, cluster 3 -->
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_cluster']/quota/@galaxy">21</replace>
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_cluster']/quota/@maxgalaxy">42</replace>
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_cluster']/quota/@cluster">5</replace>
+
+    <!-- vanilla galaxy 6, cluster 4 -->
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_defence']/quota/@galaxy">10</replace>
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_defence']/quota/@cluster">5</replace>
+
+    <!-- vanilla galaxy 2, maxgalaxy 11, cluster 2 -->
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_comp']/quota/@galaxy">5</replace>
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_comp']/quota/@maxgalaxy">18</replace>
+    <replace sel="//job[@id='xenon_destroyer_patrol_xl_comp']/quota/@cluster">5</replace>
+
+    <!-- vanilla galaxy 59, maxgalaxy 94, zone 1 -->
+    <replace sel="//job[@id='xenon_fighter_patrol_s_zone']/quota/@galaxy">70</replace>
+    <replace sel="//job[@id='xenon_fighter_patrol_s_zone']/quota/@maxgalaxy">141</replace>
+    <replace sel="//job[@id='xenon_fighter_patrol_s_zone']/quota/@zone">2</replace>
+
+    <!-- vanilla galaxy 29, maxgalaxy 69, sector 2 -->
+    <replace sel="//job[@id='xenon_frigate_patrol_m_zone_everywhereelse']/quota/@galaxy">61</replace>
+    <replace sel="//job[@id='xenon_frigate_patrol_m_zone_everywhereelse']/quota/@maxgalaxy">122</replace>
+    <replace sel="//job[@id='xenon_frigate_patrol_m_zone_everywhereelse']/quota/@sector">3</replace>
+
+    <!-- vanilla galaxy 8, maxgalaxy 16, cluster 2 -->
+    <replace sel="//job[@id='xenon_scout_patrol_s']/quota/@galaxy">12</replace>
+    <replace sel="//job[@id='xenon_scout_patrol_s']/quota/@maxgalaxy">24</replace>
+    <replace sel="//job[@id='xenon_scout_patrol_s']/quota/@cluster">3</replace>
+
+    <!-- vanilla galaxy 15 -->
+    <replace sel="//job[@id='xenon_fighter_s_deepspace_single']/quota/@galaxy">23</replace>
+
+    <!-- vanilla galaxy 7 -->
+    <replace sel="//job[@id='xenon_fighter_s_deepspace_group']/quota/@galaxy">11</replace>
+
+    <!-- vanilla wing 2 -->
+    <replace sel="//job[@id='xenon_destroyer_escort_xl']/quota/@wing">3</replace>
+
+    <!-- vanilla wing 4 -->
+    <replace sel="//job[@id='xenon_fighter_escort_s_frigate']/quota/@wing">5</replace>
+
+    <!-- vanilla wing 2 -->
+    <replace sel="//job[@id='xenon_fighter_escort_s_patrol']/quota/@wing">3</replace>
+
+</diff>

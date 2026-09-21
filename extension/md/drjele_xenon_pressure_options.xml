@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="DrJele_XenonPressureOptions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+    <cues>
+
+        <cue name="RegisterOptions" instantiate="true" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Simple_Menu_Options.Reloaded"/>
+            </conditions>
+            <actions>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_sectors_per_shipyard_count',
+            $category  = 'Xenon Pressure',
+            $name      = 'Sectors per shipyard',
+            $mouseover = 'One shipyard per this many sectors the Xenon own or contest, rounded up. At 5 that is one per five sectors, at 1 one in every sector. 0 leaves the vanilla target, which is 4, plus 2 with Split Vendetta and 1 with Cradle of Humanity.',
+            $type      = 'slidercell',
+            $default   = 0,
+            $args      = table[$min = 0, $max = 5, $step = 1],
+            $callback  = OnSectorsPerShipyardChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_sectors_per_wharf_count',
+            $category  = 'Xenon Pressure',
+            $name      = 'Sectors per wharf',
+            $mouseover = 'One wharf per this many sectors the Xenon own or contest, rounded up. At 5 that is one per five sectors, at 1 one in every sector. 0 leaves the vanilla target, which is 4, plus 2 with Split Vendetta and 1 with Cradle of Humanity.',
+            $type      = 'slidercell',
+            $default   = 0,
+            $args      = table[$min = 0, $max = 5, $step = 1],
+            $callback  = OnSectorsPerWharfChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_max_constructions_count',
+            $category  = 'Xenon Pressure',
+            $name      = 'Constructions in progress',
+            $mouseover = 'How many shipyards and wharfs the Xenon may have under construction at once before they start another. Keeps their miners and energy haulers feeding a few sites instead of forty. 0 is no limit, which is vanilla.',
+            $type      = 'slidercell',
+            $default   = 0,
+            $args      = table[$min = 0, $max = 10, $step = 1],
+            $callback  = OnMaxConstructionsChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_build_chance_percent',
+            $category  = 'Xenon Pressure',
+            $name      = 'Build chance',
+            $mouseover = 'Chance, per 1-2 minute evaluation, that the Xenon start a missing shipyard or wharf. Vanilla is 5, which makes a replacement wait 20-40 minutes on average. At 100 it starts on the next evaluation.',
+            $type      = 'slidercell',
+            $default   = 5,
+            $args      = table[$min = 1, $max = 100, $step = 1, $suffix = '%'],
+            $callback  = OnBuildChanceChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_invasion_fleet_size_percent',
+            $category  = 'Xenon Pressure',
+            $name      = 'Invasion fleet size',
+            $mouseover = 'Scales the strength a Xenon invasion gathers before it moves on a sector, and the ceiling it may request ships up to. Vanilla is 100. Bigger fleets take longer to assemble; an invasion that cannot reach its strength within an hour gives up, so pair a high value with a high build share.',
+            $type      = 'slidercell',
+            $default   = 100,
+            $args      = table[$min = 50, $max = 300, $step = 10, $suffix = '%'],
+            $callback  = OnFleetSizeChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_invasion_build_share_percent',
+            $category  = 'Xenon Pressure',
+            $name      = 'Invasion build share',
+            $mouseover = 'How much of each invasion group the Xenon may have newly built at their shipyards rather than pulled off patrol. Vanilla is 25. This is what turns a bigger fleet into more destroyers and fighters; new ships still count against the job quotas.',
+            $type      = 'slidercell',
+            $default   = 25,
+            $args      = table[$min = 0, $max = 100, $step = 5, $suffix = '%'],
+            $callback  = OnBuildShareChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_station_attack_groups_count',
+            $category  = 'Xenon Pressure',
+            $name      = 'Station attack groups',
+            $mouseover = 'How many groups may be out attacking enemy stations in a Xenon or contested sector at the same time. Vanilla is 2 at their aggression.',
+            $type      = 'slidercell',
+            $default   = 2,
+            $args      = table[$min = 1, $max = 6, $step = 1],
+            $callback  = OnStationAttackGroupsChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_long_range_raids_toggle',
+            $category  = 'Xenon Pressure',
+            $name      = 'Long range raids',
+            $mouseover = 'Lets the Xenon send expeditions against sectors of every faction, not only their gate neighbours. Vanilla is off. At most two expeditions run at once; they take two hours to gather, stay an hour, build nothing and come home.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnLongRangeRaidsChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_miner_behaviour_mode',
+            $category  = 'Xenon Pressure',
+            $name      = 'Miner behaviour',
+            $mouseover = 'What a Xenon miner or energy hauler does when shot at. 0 is vanilla: it turns and fights. 1: it keeps flying, neither fighting nor fleeing. 2: it flees at once, whatever its morale or shields, and does not drop laser towers on the way out.',
+            $type      = 'slidercell',
+            $default   = 2,
+            $args      = table[$min = 0, $max = 2, $step = 1],
+            $callback  = OnMinerBehaviourChanged,
+            ]"/>
+            </actions>
+        </cue>
+
+        <cue name="OnSectorsPerShipyardChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonSectorsPerShipyard" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnSectorsPerWharfChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonSectorsPerWharf" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnMaxConstructionsChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonMaxConstructions" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnBuildChanceChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonBuildChance" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnFleetSizeChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonFleetSize" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnBuildShareChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonBuildShare" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnStationAttackGroupsChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonStationAttackGroups" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnLongRangeRaidsChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonLongRangeRaids" exact="event.param.$value"/>
+                <signal_cue_instantly cue="md.DrJele_XenonPressure.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnMinerBehaviourChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonMinerBehaviour" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+    </cues>
+</mdscript>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- vanilla 9500; shared by ship_xen_m_miner_01_a and ship_xen_m_miner_solid_01_a -->
+    <replace sel="//macro[@name='storage_xen_m_miner_01_a_macro']/properties/cargo/@max">22500</replace>
+
+</diff>

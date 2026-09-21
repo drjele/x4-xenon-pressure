@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- Placed before the vanilla count check rather than after the DLC patch marker, so it lands after every DLC addition whatever the load order.
+         $ClaimedSectors is the library's own list of sectors owned or contested by the faction, filled by Sector_Iterate in the same cycle; 0 sectors per station leaves the vanilla target.
+         The options menu hands values over as floats, hence the )i casts.
+         $DrJeleConstructionCount is counted in the same sector pass that counts shipyards and wharfs, and reset where vanilla resets its own counts. -->
+    <add sel="//cue[@name='Process']/actions/set_value[@name='$ShipyardCount']" pos="after">
+        <set_value name="$DrJeleConstructionCount" exact="0"/>
+    </add>
+    <add sel="//cue[@name='Sector_Iterate']//do_if[@value='$Station.isplannedshipyard']" pos="before">
+        <do_if value="$Station.isconstruction and ($Station.isplannedshipyard or $Station.isplannedwharf)">
+            <set_value name="$DrJeleConstructionCount" operation="add"/>
+        </do_if>
+    </add>
+
+    <add sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$ShipyardCount lt $DesiredShipyards']" pos="before">
+        <set_value name="$DrJeleBuildChance" exact="5"/>
+        <do_if value="$Faction == faction.xenon">
+            <set_value name="$DrJeleSectorsPer" exact="(if global.$DrJeleXenonSectorsPerShipyard? then global.$DrJeleXenonSectorsPerShipyard else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$SectorsPerShipyard else 0))i"/>
+            <do_if value="$DrJeleSectorsPer gt 0">
+                <set_value name="$DesiredShipyards" exact="(($ClaimedSectors.count + $DrJeleSectorsPer - 1) / $DrJeleSectorsPer)i"/>
+            </do_if>
+            <set_value name="$DrJeleMaxConstructions" exact="(if global.$DrJeleXenonMaxConstructions? then global.$DrJeleXenonMaxConstructions else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$MaxConstructions else 0))i"/>
+            <do_if value="$DrJeleMaxConstructions gt 0 and (if $DrJeleConstructionCount? then $DrJeleConstructionCount else 0) ge $DrJeleMaxConstructions">
+                <set_value name="$DesiredShipyards" exact="$ShipyardCount" comment="the cap is reached; want nothing more this cycle"/>
+            </do_if>
+            <set_value name="$DrJeleBuildChance" exact="(if global.$DrJeleXenonBuildChance? then global.$DrJeleXenonBuildChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildChance else 5))i"/>
+            <debug_text text="'DrJele Xenon Pressure: %s shipyards, desires %s (%s claimed sectors, %s per shipyard, %s of %s constructions), build chance %s'.[$ShipyardCount, $DesiredShipyards, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+        </do_if>
+    </add>
+    <replace sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$ShipyardCount lt $DesiredShipyards']/set_value[@name='$ShipyardsToBuild']/@chance">$DrJeleBuildChance</replace>
+
+    <add sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$WharfCount lt $DesiredWharfs']" pos="before">
+        <set_value name="$DrJeleBuildChance" exact="5"/>
+        <do_if value="$Faction == faction.xenon">
+            <set_value name="$DrJeleSectorsPer" exact="(if global.$DrJeleXenonSectorsPerWharf? then global.$DrJeleXenonSectorsPerWharf else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$SectorsPerWharf else 0))i"/>
+            <do_if value="$DrJeleSectorsPer gt 0">
+                <set_value name="$DesiredWharfs" exact="(($ClaimedSectors.count + $DrJeleSectorsPer - 1) / $DrJeleSectorsPer)i"/>
+            </do_if>
+            <set_value name="$DrJeleMaxConstructions" exact="(if global.$DrJeleXenonMaxConstructions? then global.$DrJeleXenonMaxConstructions else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$MaxConstructions else 0))i"/>
+            <do_if value="$DrJeleMaxConstructions gt 0 and (if $DrJeleConstructionCount? then $DrJeleConstructionCount else 0) + $ShipyardsToBuild ge $DrJeleMaxConstructions">
+                <set_value name="$DesiredWharfs" exact="$WharfCount" comment="the cap is reached; want nothing more this cycle"/>
+            </do_if>
+            <set_value name="$DrJeleBuildChance" exact="(if global.$DrJeleXenonBuildChance? then global.$DrJeleXenonBuildChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildChance else 5))i"/>
+            <debug_text text="'DrJele Xenon Pressure: %s wharfs, desires %s (%s claimed sectors, %s per wharf, %s of %s constructions), build chance %s'.[$WharfCount, $DesiredWharfs, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+        </do_if>
+    </add>
+    <replace sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$WharfCount lt $DesiredWharfs']/set_value[@name='$WharfsToBuild']/@chance">$DrJeleBuildChance</replace>
+
+</diff>

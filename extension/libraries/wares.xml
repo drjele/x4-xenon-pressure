@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- Build resources at half of vanilla. Attributes are patched rather than the ware replaced, so dismantlefactor and anything another mod adds survive. -->
+
+    <!-- N: vanilla 41 / 34 / 35 -->
+    <replace sel="//ware[@id='ship_xen_s_fighter_01_a']/production/primary/ware[@ware='energycells']/@amount">20</replace>
+    <replace sel="//ware[@id='ship_xen_s_fighter_01_a']/production/primary/ware[@ware='ore']/@amount">17</replace>
+    <replace sel="//ware[@id='ship_xen_s_fighter_01_a']/production/primary/ware[@ware='silicon']/@amount">17</replace>
+
+    <!-- M: vanilla 48 / 40 / 40 -->
+    <replace sel="//ware[@id='ship_xen_s_fighter_02_a']/production/primary/ware[@ware='energycells']/@amount">24</replace>
+    <replace sel="//ware[@id='ship_xen_s_fighter_02_a']/production/primary/ware[@ware='ore']/@amount">20</replace>
+    <replace sel="//ware[@id='ship_xen_s_fighter_02_a']/production/primary/ware[@ware='silicon']/@amount">20</replace>
+
+    <!-- P: vanilla 94 / 79 / 79 -->
+    <replace sel="//ware[@id='ship_xen_m_fighter_01_a']/production/primary/ware[@ware='energycells']/@amount">47</replace>
+    <replace sel="//ware[@id='ship_xen_m_fighter_01_a']/production/primary/ware[@ware='ore']/@amount">39</replace>
+    <replace sel="//ware[@id='ship_xen_m_fighter_01_a']/production/primary/ware[@ware='silicon']/@amount">39</replace>
+
+    <!-- M miner: vanilla 85 / 71 / 72 -->
+    <replace sel="//ware[@id='ship_xen_m_miner_01_a']/production/primary/ware[@ware='energycells']/@amount">42</replace>
+    <replace sel="//ware[@id='ship_xen_m_miner_01_a']/production/primary/ware[@ware='ore']/@amount">35</replace>
+    <replace sel="//ware[@id='ship_xen_m_miner_01_a']/production/primary/ware[@ware='silicon']/@amount">36</replace>
+
+    <!-- M miner (solid): vanilla 85 / 71 / 72 -->
+    <replace sel="//ware[@id='ship_xen_m_miner_solid_01_a']/production/primary/ware[@ware='energycells']/@amount">42</replace>
+    <replace sel="//ware[@id='ship_xen_m_miner_solid_01_a']/production/primary/ware[@ware='ore']/@amount">35</replace>
+    <replace sel="//ware[@id='ship_xen_m_miner_solid_01_a']/production/primary/ware[@ware='silicon']/@amount">36</replace>
+
+    <!-- I: vanilla 6049 / 5070 / 5090 -->
+    <replace sel="//ware[@id='ship_xen_xl_carrier_01_a']/production/primary/ware[@ware='energycells']/@amount">3000</replace>
+    <replace sel="//ware[@id='ship_xen_xl_carrier_01_a']/production/primary/ware[@ware='ore']/@amount">2500</replace>
+    <replace sel="//ware[@id='ship_xen_xl_carrier_01_a']/production/primary/ware[@ware='silicon']/@amount">2500</replace>
+
+    <!-- K: vanilla 4560 / 2189 / 1403 -->
+    <replace sel="//ware[@id='ship_xen_xl_destroyer_01_a']/production/primary/ware[@ware='energycells']/@amount">2280</replace>
+    <replace sel="//ware[@id='ship_xen_xl_destroyer_01_a']/production/primary/ware[@ware='ore']/@amount">1095</replace>
+    <replace sel="//ware[@id='ship_xen_xl_destroyer_01_a']/production/primary/ware[@ware='silicon']/@amount">702</replace>
+
+    <!-- Station modules at half of vanilla, resources and build time. The wharf build module and the two defence modules are shared wares with a separate xenon production method; only that method is touched. -->
+    <!-- L/XL ship fabrication bay: vanilla 4866 / 12301 / 7186, 954 s -->
+    <replace sel="//ware[@id='module_xen_build_xl_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">2433</replace>
+    <replace sel="//ware[@id='module_xen_build_xl_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">6150</replace>
+    <replace sel="//ware[@id='module_xen_build_xl_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">3593</replace>
+    <replace sel="//ware[@id='module_xen_build_xl_01']/production[@method='default']/@time">477</replace>
+    <!-- M ship fabrication bay: vanilla 2750 / 6952 / 4062, 539 s -->
+    <replace sel="//ware[@id='module_xen_build_m_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">1375</replace>
+    <replace sel="//ware[@id='module_xen_build_m_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">3476</replace>
+    <replace sel="//ware[@id='module_xen_build_m_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">2031</replace>
+    <replace sel="//ware[@id='module_xen_build_m_01']/production[@method='default']/@time">269</replace>
+    <!-- S ship fabrication bay: vanilla 2750 / 6952 / 4062, 539 s -->
+    <replace sel="//ware[@id='module_xen_build_s_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">1375</replace>
+    <replace sel="//ware[@id='module_xen_build_s_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">3476</replace>
+    <replace sel="//ware[@id='module_xen_build_s_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">2031</replace>
+    <replace sel="//ware[@id='module_xen_build_s_01']/production[@method='default']/@time">269</replace>
+    <!-- S/M ship fabrication bay used by the wharf plan: vanilla 6620 / 6952 / 4062, 539 s -->
+    <replace sel="//ware[@id='module_gen_build_dockarea_m_01']/production[@method='xenon']/primary/ware[@ware='energycells']/@amount">3310</replace>
+    <replace sel="//ware[@id='module_gen_build_dockarea_m_01']/production[@method='xenon']/primary/ware[@ware='ore']/@amount">3476</replace>
+    <replace sel="//ware[@id='module_gen_build_dockarea_m_01']/production[@method='xenon']/primary/ware[@ware='silicon']/@amount">2031</replace>
+    <replace sel="//ware[@id='module_gen_build_dockarea_m_01']/production[@method='xenon']/@time">269</replace>
+    <!-- station base: vanilla 1391 / 3515 / 2054, 2726 s -->
+    <replace sel="//ware[@id='module_xen_def_base_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">695</replace>
+    <replace sel="//ware[@id='module_xen_def_base_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">1757</replace>
+    <replace sel="//ware[@id='module_xen_def_base_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">1027</replace>
+    <replace sel="//ware[@id='module_xen_def_base_01']/production[@method='default']/@time">1363</replace>
+    <!-- M dock: vanilla 363 / 918 / 536, 1424 s -->
+    <replace sel="//ware[@id='module_xen_dock_m_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">181</replace>
+    <replace sel="//ware[@id='module_xen_dock_m_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">459</replace>
+    <replace sel="//ware[@id='module_xen_dock_m_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">268</replace>
+    <replace sel="//ware[@id='module_xen_dock_m_01']/production[@method='default']/@time">712</replace>
+    <!-- storage: vanilla 153 / 387 / 226, 387 s -->
+    <replace sel="//ware[@id='module_xen_stor_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">76</replace>
+    <replace sel="//ware[@id='module_xen_stor_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">193</replace>
+    <replace sel="//ware[@id='module_xen_stor_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">113</replace>
+    <replace sel="//ware[@id='module_xen_stor_01']/production[@method='default']/@time">193</replace>
+    <!-- energy cell production: vanilla 562 / 963 / 963, 378 s -->
+    <replace sel="//ware[@id='module_xen_prod_energycells_01']/production[@method='default']/primary/ware[@ware='energycells']/@amount">281</replace>
+    <replace sel="//ware[@id='module_xen_prod_energycells_01']/production[@method='default']/primary/ware[@ware='ore']/@amount">481</replace>
+    <replace sel="//ware[@id='module_xen_prod_energycells_01']/production[@method='default']/primary/ware[@ware='silicon']/@amount">481</replace>
+    <replace sel="//ware[@id='module_xen_prod_energycells_01']/production[@method='default']/@time">189</replace>
+    <!-- defence disc used by the Xenon plans: vanilla 196 / 496 / 290, 384 s -->
+    <replace sel="//ware[@id='module_arg_def_disc_01']/production[@method='xenon']/primary/ware[@ware='energycells']/@amount">98</replace>
+    <replace sel="//ware[@id='module_arg_def_disc_01']/production[@method='xenon']/primary/ware[@ware='ore']/@amount">248</replace>
+    <replace sel="//ware[@id='module_arg_def_disc_01']/production[@method='xenon']/primary/ware[@ware='silicon']/@amount">145</replace>
+    <replace sel="//ware[@id='module_arg_def_disc_01']/production[@method='xenon']/@time">192</replace>
+    <!-- defence tube used by the Xenon plans: vanilla 170 / 431 / 252, 334 s -->
+    <replace sel="//ware[@id='module_arg_def_tube_01']/production[@method='xenon']/primary/ware[@ware='energycells']/@amount">85</replace>
+    <replace sel="//ware[@id='module_arg_def_tube_01']/production[@method='xenon']/primary/ware[@ware='ore']/@amount">215</replace>
+    <replace sel="//ware[@id='module_arg_def_tube_01']/production[@method='xenon']/primary/ware[@ware='silicon']/@amount">126</replace>
+    <replace sel="//ware[@id='module_arg_def_tube_01']/production[@method='xenon']/@time">167</replace>
+
+</diff>

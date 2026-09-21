@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- How many groups may be out attacking enemy stations in a Xenon or contested sector at once; vanilla is 2 at their aggression. A goal local, recomputed on every evaluation. -->
+    <add sel="//remove_value[@name='$Mood']" pos="after">
+        <do_if value="$Faction == faction.xenon">
+            <set_value name="this.$MaxAttackEnemyStationSubGoals" exact="(if global.$DrJeleXenonStationAttackGroups? then global.$DrJeleXenonStationAttackGroups else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$StationAttackGroups else this.$MaxAttackEnemyStationSubGoals))i"/>
+            <set_value name="this.$MaxDefenceSubGoals" exact="[this.$MaxDefenceSubGoals, this.$MaxAttackEnemyStationSubGoals].max"/>
+        </do_if>
+    </add>
+
+</diff>

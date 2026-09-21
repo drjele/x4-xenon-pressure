@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+
+    <!-- 0 vanilla, 1 keep flying, 2 flee without laser towers; 0 for anything that is not a Xenon miner hull. -->
+    <add sel="//handler[@name='AttackHandler']/conditions/check_any[@comment='fight or flight']" pos="before">
+        <set_value name="$DrJeleXenonMinerBehaviour" exact="(if (this.trueowner == faction.xenon) and (@this.ship.type == shiptype.miner) then (if global.$DrJeleXenonMinerBehaviour? then global.$DrJeleXenonMinerBehaviour else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$MinerBehaviour else 0)) else 0)i"/>
+    </add>
+
+    <add sel="//handler[@name='AttackHandler']/conditions/check_any[@comment='fight or flight']/check_all[@comment='flee']" pos="prepend">
+        <check_value value="$DrJeleXenonMinerBehaviour != 1"/>
+    </add>
+    <add sel="//handler[@name='AttackHandler']/conditions/check_any[@comment='fight or flight']/check_all[@comment='flee']/check_any" pos="prepend">
+        <check_value value="$DrJeleXenonMinerBehaviour == 2"/>
+    </add>
+    <add sel="//handler[@name='AttackHandler']/conditions/check_any[@comment='fight or flight']/check_all[@comment='fight']" pos="prepend">
+        <check_value value="$DrJeleXenonMinerBehaviour == 0"/>
+    </add>
+
+    <replace sel="//handler[@name='AttackHandler']/actions//do_elseif[@value='@$fleerespond']//create_order/param[@name='deploydistraction']/@value">($DrJeleXenonMinerBehaviour != 2) and (not event.object.isplayerowned or (@event.object.signal.{'attacked'}.response.id == 'distract'))</replace>
+
+    <add sel="//handler[@name='AttackHandler']/actions/remove_value[@name='$callforhelp']" pos="after">
+        <remove_value name="$DrJeleXenonMinerBehaviour"/>
+    </add>
+
+</diff>

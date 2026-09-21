@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="DrJele_XenonPressure" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+    <cues>
+
+        <cue name="Configuration" instantiate="true" namespace="static" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start"/>
+            </conditions>
+            <actions>
+                <set_value name="$SectorsPerShipyard" exact="0" comment="one shipyard per this many sectors the Xenon own or contest, rounded up; 0 leaves the vanilla target of 4, plus 2 with Split Vendetta and 1 with Cradle of Humanity"/>
+                <set_value name="$SectorsPerWharf" exact="0" comment="the same for wharfs; 0 leaves the vanilla target"/>
+                <set_value name="$MaxConstructions" exact="0" comment="shipyards and wharfs that may be under construction at once before another is started; 0 is no limit, which is vanilla"/>
+                <set_value name="$BuildChance" exact="5" comment="percent chance per 1-2 minute evaluation that a missing shipyard or wharf is started; 5 is vanilla"/>
+                <set_value name="$FleetSize" exact="100" comment="percent of the strength an invasion gathers before it moves, and of the ceiling it may request up to; 100 is vanilla"/>
+                <set_value name="$BuildShare" exact="25" comment="percent of each invasion group that may be newly built rather than pulled from patrols; 25 is vanilla"/>
+                <set_value name="$StationAttackGroups" exact="2" comment="groups that may attack enemy stations in a Xenon or contested sector at once; 2 is vanilla"/>
+                <set_value name="$LongRangeRaids" exact="0" comment="1 sends expeditions against every faction with a faction manager, not only gate neighbours; 0 is vanilla"/>
+                <set_value name="$MinerBehaviour" exact="2" comment="what a Xenon miner does when attacked: 0 fights back (vanilla), 1 keeps flying, 2 flees without deploying laser towers"/>
+                <set_value name="$DebugChance" exact="0" comment="100 writes every evaluation to the debug log"/>
+
+                <set_value name="global.$DrJeleXenonPressureConfig" exact="table[$SectorsPerShipyard  = $SectorsPerShipyard,
+                                                                          $SectorsPerWharf     = $SectorsPerWharf,
+                                                                          $MaxConstructions    = $MaxConstructions,
+                                                                          $BuildChance         = $BuildChance,
+                                                                          $FleetSize           = $FleetSize,
+                                                                          $BuildShare          = $BuildShare,
+                                                                          $StationAttackGroups = $StationAttackGroups,
+                                                                          $LongRangeRaids      = $LongRangeRaids,
+                                                                          $MinerBehaviour      = $MinerBehaviour,
+                                                                          $DebugChance         = $DebugChance]"/>
+                <debug_text text="'DrJele Xenon Pressure: sectors per shipyard %s, sectors per wharf %s, max constructions %s, build chance %s, fleet size %s, build share %s, station attack groups %s, long range raids %s, miner behaviour %s'.[$SectorsPerShipyard, $SectorsPerWharf, $MaxConstructions, $BuildChance, $FleetSize, $BuildShare, $StationAttackGroups, $LongRangeRaids, $MinerBehaviour]" chance="$DebugChance"/>
+            </actions>
+        </cue>
+
+        <!-- The one setting that is a manager variable rather than a goal local, so it is written rather than patched - on every load, and again when the option changes. -->
+        <cue name="Apply" instantiate="true" version="1">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start"/>
+                <check_value value="macro.xu_ep2_universe_macro == player.galaxy.macro" comment="the faction managers only exist in the main galaxy; without this the child would poll forever in a Timelines scenario, a tutorial or the workshop map"/>
+            </conditions>
+            <cues>
+                <cue name="ApplyWhenManagerReady" checkinterval="5s">
+                    <conditions>
+                        <check_value value="md.FactionLogic.XenonFactionLogic_Manager.$ExpeditionEnemies?"/>
+                    </conditions>
+                    <actions>
+                        <include_actions ref="ApplySettings"/>
+                    </actions>
+                </cue>
+            </cues>
+        </cue>
+
+        <cue name="Reapply" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+                <check_value value="md.FactionLogic.XenonFactionLogic_Manager.$ExpeditionEnemies?"/>
+            </conditions>
+            <actions>
+                <include_actions ref="ApplySettings"/>
+            </actions>
+        </cue>
+
+        <library name="ApplySettings">
+            <actions>
+                <set_value name="$Config" exact="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig else table[]"/>
+                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+                <set_value name="$Raids" exact="(if global.$DrJeleXenonLongRangeRaids? then global.$DrJeleXenonLongRangeRaids else (if $Config.$LongRangeRaids? then $Config.$LongRangeRaids else 0))i"/>
+
+                <set_value name="$Enemies" exact="[]"/>
+                <do_if value="1 == $Raids">
+                    <do_for_each name="$Faction" in="global.$FactionManagers.keys.list">
+                        <do_if value="$Faction != faction.xenon and $Faction != faction.khaak">
+                            <append_to_list name="$Enemies" exact="$Faction"/>
+                        </do_if>
+                    </do_for_each>
+                </do_if>
+                <set_value name="md.FactionLogic.XenonFactionLogic_Manager.$ExpeditionEnemies" exact="$Enemies"/>
+                <debug_text text="'DrJele Xenon Pressure: long range raids %s, expedition enemies %s'.[$Raids, $Enemies]" chance="$DebugChance"/>
+
+                <remove_value name="$Enemies"/>
+            </actions>
+        </library>
+
+    </cues>
+</mdscript>
