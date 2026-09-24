@@ -26,7 +26,7 @@
                 <set_value name="$DesiredShipyards" exact="$ShipyardCount" comment="the cap is reached; want nothing more this cycle"/>
             </do_if>
             <set_value name="$DrJeleBuildChance" exact="(if global.$DrJeleXenonBuildChance? then global.$DrJeleXenonBuildChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildChance else 5))i"/>
-            <debug_text text="'DrJele Xenon Pressure: %s shipyards, desires %s (%s claimed sectors, %s per shipyard, %s of %s constructions), build chance %s'.[$ShipyardCount, $DesiredShipyards, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+            <debug_text text="'DrJele Xenon Pressure: %s shipyards, desires %s (%s claimed sectors, %s per shipyard, %s of %s constructions), build chance %s'.[$ShipyardCount, $DesiredShipyards, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0)"/>
         </do_if>
     </add>
     <replace sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$ShipyardCount lt $DesiredShipyards']/set_value[@name='$ShipyardsToBuild']/@chance">$DrJeleBuildChance</replace>
@@ -43,7 +43,7 @@
                 <set_value name="$DesiredWharfs" exact="$WharfCount" comment="the cap is reached; want nothing more this cycle"/>
             </do_if>
             <set_value name="$DrJeleBuildChance" exact="(if global.$DrJeleXenonBuildChance? then global.$DrJeleXenonBuildChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$BuildChance else 5))i"/>
-            <debug_text text="'DrJele Xenon Pressure: %s wharfs, desires %s (%s claimed sectors, %s per wharf, %s of %s constructions), build chance %s'.[$WharfCount, $DesiredWharfs, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+            <debug_text text="'DrJele Xenon Pressure: %s wharfs, desires %s (%s claimed sectors, %s per wharf, %s of %s constructions), build chance %s'.[$WharfCount, $DesiredWharfs, $ClaimedSectors.count, $DrJeleSectorsPer, @$DrJeleConstructionCount, $DrJeleMaxConstructions, $DrJeleBuildChance]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0)"/>
         </do_if>
     </add>
     <replace sel="//cue[@name='Analyse_Stations']/actions/do_if[@value='$WharfCount lt $DesiredWharfs']/set_value[@name='$WharfsToBuild']/@chance">$DrJeleBuildChance</replace>

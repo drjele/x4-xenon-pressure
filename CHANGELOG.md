@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.1.0] - 2026-09-24 - Debug logging toggle
+
 ### Added
 
+- **Debug logging** toggle in Extension Options: switches the mod's debug log output on and off in game, instead of editing `$DebugChance` and reinstalling.
 - Square Xenon fleet preview matching the visual style of the other DrJele X4 mods.
 
 ### Fixed
@@ -38,4 +41,5 @@ All notable changes to this project will be documented in this file.
 - Replaces Xenon Hell and AI Xenon Miners, which patch the same nodes of `interrupt.attacked.xml` and, in Xenon Hell's case, the same jobs and wares. The ship buffs Xenon Hell also carried (P laser damage, M travel engine thrust, miner hull) are not included.
 - The destroyer's resources are half of the 9.00 recipe, not Xenon Hell's numbers, which were half of the 4.0 one.
 
+[v1.1.0]: https://github.com/drjele/x4-xenon-pressure/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/drjele/x4-xenon-pressure/releases/tag/v1.0.0

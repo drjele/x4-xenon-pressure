@@ -156,7 +156,7 @@ Each can also be overridden at runtime without touching the file:
 <set_value name="global.$DrJeleXenonMinerBehaviour" exact="1"/>
 ```
 
-`$DrJeleXenonLongRangeRaids` is only picked up on the next load or when the option changes, because it is applied by writing the manager variable; the others are read live. Set `$DebugChance` to 100 in the configuration cue to have every evaluation written to the debug log.
+`$DrJeleXenonLongRangeRaids` is only picked up on the next load or when the option changes, because it is applied by writing the manager variable; the others are read live. Turn on **Debug logging** in the options, or set `$DebugChance` to 100 in the configuration cue, to have every evaluation written to the debug log.
 
 The static numbers — cargo, quotas, resources — are edited in the patch files under `extension/` and need a reinstall and a restart.
 
@@ -170,7 +170,7 @@ Add this to the game's launch options — Steam, right click X4, **Properties �
 
 The log lands next to your savegames: `$HOME/.config/EgoSoft/X4/<userid>/debuglog.txt` on Linux, `Documents\Egosoft\X4\<userid>\debuglog.txt` on Windows. If Steam is installed as a snap it runs the game with a redirected home, which puts both under `~/snap/steam/common/`. `all` turns on every one of the engine's debug channels; a narrower filter only makes sense once you know which channel a message uses, and the engine prints `Unknown debug filter` for a name it does not recognise.
 
-The mod itself is silent by default. Set `$DebugChance` to `100` in the configuration cue of `extension/md/drjele_xenon_pressure.xml`, re-run `./install.sh` and restart, and every evaluation is written out:
+The mod itself is silent by default. To hear from it, turn on **Debug logging** in **Options → Extension Options → Xenon Pressure** (needs SirNukes Mod Support APIs); without the API, set `$DebugChance` to `100` in the configuration cue of `extension/md/drjele_xenon_pressure.xml`, re-run `./install.sh` and restart. Either way, every evaluation is written out:
 
 ```
 DrJele Xenon Pressure: sectors per shipyard 0, sectors per wharf 0, max constructions 0, build chance 5, fleet size 100, build share 25, station attack groups 2, long range raids 0, miner behaviour 2

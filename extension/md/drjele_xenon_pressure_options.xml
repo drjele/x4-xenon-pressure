@@ -114,6 +114,17 @@
             $args      = table[$min = 0, $max = 2, $step = 1],
             $callback  = OnMinerBehaviourChanged,
             ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_pressure_debug',
+            $category  = 'Xenon Pressure',
+            $name      = 'Debug logging',
+            $mouseover = 'Writes the applied settings and every Xenon shipyard, wharf and invasion evaluation to the debug log. Needs the game started with -debug scripts.',
+            $type      = 'button',
+            $default   = 0,
+            $callback  = OnDebugChanged,
+            ]"/>
             </actions>
         </cue>
 
@@ -196,6 +207,15 @@
             </conditions>
             <actions>
                 <set_value name="global.$DrJeleXenonMinerBehaviour" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnDebugChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonPressureDebugChance" exact="if event.param.$value then 100 else 0"/>
             </actions>
         </cue>
 

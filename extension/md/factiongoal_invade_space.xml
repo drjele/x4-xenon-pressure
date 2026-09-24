@@ -7,7 +7,7 @@
             <set_value name="$DrJeleFleetSize" exact="if global.$DrJeleXenonFleetSize? then global.$DrJeleXenonFleetSize else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$FleetSize else 100)"/>
             <set_value name="$MinimumStrength" exact="($MinimumStrength * $DrJeleFleetSize) / 100"/>
             <set_value name="$MaximumStrength" exact="($MaximumStrength * $DrJeleFleetSize) / 100"/>
-            <debug_text text="'DrJele Xenon Pressure: invasion of %s wants strength %s to %s (fleet size %s)'.[$Target.knownname, $MinimumStrength, $MaximumStrength, $DrJeleFleetSize]" chance="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0"/>
+            <debug_text text="'DrJele Xenon Pressure: invasion of %s wants strength %s to %s (fleet size %s)'.[$Target.knownname, $MinimumStrength, $MaximumStrength, $DrJeleFleetSize]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else (if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig.$DebugChance else 0)"/>
         </do_if>
     </add>
 

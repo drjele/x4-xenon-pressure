@@ -28,7 +28,7 @@
                                                                           $LongRangeRaids      = $LongRangeRaids,
                                                                           $MinerBehaviour      = $MinerBehaviour,
                                                                           $DebugChance         = $DebugChance]"/>
-                <debug_text text="'DrJele Xenon Pressure: sectors per shipyard %s, sectors per wharf %s, max constructions %s, build chance %s, fleet size %s, build share %s, station attack groups %s, long range raids %s, miner behaviour %s'.[$SectorsPerShipyard, $SectorsPerWharf, $MaxConstructions, $BuildChance, $FleetSize, $BuildShare, $StationAttackGroups, $LongRangeRaids, $MinerBehaviour]" chance="$DebugChance"/>
+                <debug_text text="'DrJele Xenon Pressure: sectors per shipyard %s, sectors per wharf %s, max constructions %s, build chance %s, fleet size %s, build share %s, station attack groups %s, long range raids %s, miner behaviour %s'.[$SectorsPerShipyard, $SectorsPerWharf, $MaxConstructions, $BuildChance, $FleetSize, $BuildShare, $StationAttackGroups, $LongRangeRaids, $MinerBehaviour]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else $DebugChance"/>
             </actions>
         </cue>
 
@@ -63,7 +63,7 @@
         <library name="ApplySettings">
             <actions>
                 <set_value name="$Config" exact="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig else table[]"/>
-                <set_value name="$DebugChance" exact="if $Config.$DebugChance? then $Config.$DebugChance else 0"/>
+                <set_value name="$DebugChance" exact="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else (if $Config.$DebugChance? then $Config.$DebugChance else 0)"/>
                 <set_value name="$Raids" exact="(if global.$DrJeleXenonLongRangeRaids? then global.$DrJeleXenonLongRangeRaids else (if $Config.$LongRangeRaids? then $Config.$LongRangeRaids else 0))i"/>
 
                 <set_value name="$Enemies" exact="[]"/>
