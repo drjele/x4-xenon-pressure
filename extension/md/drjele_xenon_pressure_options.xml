@@ -117,6 +117,29 @@
                 <signal_cue_instantly
                         cue="md.Simple_Menu_Options.Register_Option"
                         param="table[
+            $id        = 'drjele_xenon_trade_range_jumps',
+            $category  = 'Xenon Pressure',
+            $name      = 'Miner and hauler range',
+            $mouseover = 'How many gate jumps from where they work Xenon miners and energy haulers will go to mine, buy and sell. 2 is vanilla, and it leaves any Xenon construction farther than that from a mining field or a solar station without supplies. Applied to the ships already flying and, every ten minutes, to the new ones.',
+            $type      = 'slidercell',
+            $default   = 2,
+            $args      = table[$min = 2, $max = 10, $step = 1, $suffix = ' jumps'],
+            $callback  = OnTradeRangeChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
+            $id        = 'drjele_xenon_unstick_impossible_builds',
+            $category  = 'Xenon Pressure',
+            $name      = 'Unstick impossible builds',
+            $mouseover = 'Xenon station builds that wait for wares the Xenon never make, such as the claytronics and hull parts of a strut of another race the game can end an expansion with: a queued one is cancelled, one already under way is given just those wares. Checked every ten minutes. Off is vanilla, where such a build waits forever.',
+            $type      = 'button',
+            $default   = 1,
+            $callback  = OnUnstickImpossibleBuildsChanged,
+            ]"/>
+                <signal_cue_instantly
+                        cue="md.Simple_Menu_Options.Register_Option"
+                        param="table[
             $id        = 'drjele_xenon_pressure_debug',
             $category  = 'Xenon Pressure',
             $name      = 'Debug logging',
@@ -207,6 +230,26 @@
             </conditions>
             <actions>
                 <set_value name="global.$DrJeleXenonMinerBehaviour" exact="event.param.$value"/>
+            </actions>
+        </cue>
+
+        <cue name="OnTradeRangeChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonTradeRange" exact="event.param.$value"/>
+                <signal_cue_instantly cue="md.DrJele_XenonPressure.Reapply"/>
+            </actions>
+        </cue>
+
+        <cue name="OnUnstickImpossibleBuildsChanged" instantiate="true">
+            <conditions>
+                <event_cue_signalled/>
+            </conditions>
+            <actions>
+                <set_value name="global.$DrJeleXenonUnstickImpossibleBuilds" exact="if event.param.$value then 1 else 0"/>
+                <signal_cue_instantly cue="md.DrJele_XenonPressure.Reapply"/>
             </actions>
         </cue>
 

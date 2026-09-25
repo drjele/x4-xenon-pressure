@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.2.0] - 2026-09-25 - Miner range and impossible builds
+
+### Added
+
+- **Miner and hauler range** slider, 2 to 10 gate jumps, vanilla 2: the range Xenon miners and energy haulers mine, buy and sell within, applied with `edit_order_param` to the ships already flying and, every ten minutes, to new ones. A Xenon construction farther than two jumps from a mining field or a solar station is otherwise never supplied. A wide range also sends Xenon miners into other factions' and player sectors.
+- **Unstick impossible builds** toggle, on by default: every ten minutes, Xenon station builds waiting for wares the Xenon never make, such as the claytronics and hull parts of a strut of another race the game can end an expansion with, are unstuck. A queued one is cancelled the way vanilla cancels the builds of a station it deconstructs; one already under way cannot be aborted, so it is given exactly the foreign wares it lacks.
+
+### Fixed
+
+- The README described the invasion ceiling as twice the minimum. It is twice the known defence of the target, never below the minimum, so without intel the two are equal.
+
 ## [v1.1.0] - 2026-09-24 - Debug logging toggle
 
 ### Added
@@ -41,5 +52,6 @@ All notable changes to this project will be documented in this file.
 - Replaces Xenon Hell and AI Xenon Miners, which patch the same nodes of `interrupt.attacked.xml` and, in Xenon Hell's case, the same jobs and wares. The ship buffs Xenon Hell also carried (P laser damage, M travel engine thrust, miner hull) are not included.
 - The destroyer's resources are half of the 9.00 recipe, not Xenon Hell's numbers, which were half of the 4.0 one.
 
+[v1.2.0]: https://github.com/drjele/x4-xenon-pressure/releases/tag/v1.2.0
 [v1.1.0]: https://github.com/drjele/x4-xenon-pressure/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/drjele/x4-xenon-pressure/releases/tag/v1.0.0

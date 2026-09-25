@@ -42,8 +42,10 @@ Restart X4 after installing or updating. To remove the manual installation:
 | **Station attack groups**     | 1 – 6      | 2       | `$MaxAttackEnemyStationSubGoals` — how many groups may be attacking enemy stations in a Xenon or contested sector at once                                                                                                  |
 | **Long range raids**          | on / off   | off     | fills the manager's `$ExpeditionEnemies` with every faction, so expeditions may target sectors beyond the Xenon's gate neighbours                                                                                          |
 | **Miner behaviour**           | 0 – 2      | 0       | what a Xenon miner or energy hauler does when shot at: **0** turns to fight, **1** keeps flying and neither fights nor flees, **2** flees at once, no laser towers                                                         |
+| **Miner and hauler range**    | 2 – 10     | 2       | the gate range in the default order of every Xenon miner and energy hauler — how far from where they work they mine, buy and sell                                                                                          |
+| **Unstick impossible builds** | on / off   | off     | Xenon station builds that wait for wares the Xenon never make: a queued one is cancelled, one under way is given just those wares; checked every ten minutes                                                               |
 
-Every default is vanilla except **Miner behaviour**, which defaults to **2**.
+Every default is vanilla except **Miner behaviour**, which defaults to **2**, and **Unstick impossible builds**, which defaults to **on**: it only ever touches a build that could not finish otherwise.
 
 ### The static changes
 
@@ -107,7 +109,8 @@ target does not conjure a station in a sector they have lost. When the Xenon los
 
 **Build chance** is what turns a target into a replacement. At 5 % a Xenon shipyard you kill takes 20–40 minutes on average before the replacement is even started, and then it has to be built. At 100 % the construction starts on the next evaluation. This slider is the same for shipyards and wharfs; it does not touch other factions.
 
-**Invasion fleet size** and **Invasion build share** are the two numbers behind how hard a Xenon attack lands. The Xenon use the same invasion machinery as every other faction, and their aggression mood is already at its maximum, so there is no "more aggressive" mood to set. What the mood sets is a strength the invasion must gather in its staging area before it moves — for the Xenon, at least two destroyers' worth, or 0.8 times what they believe defends the target — and a ceiling of twice that. The fleet size slider scales both. The catch is that an invasion that cannot reach its strength within an hour gives up, and by default only a quarter of each group may be newly built; the rest is commandeered from patrols. Raise the build share along with the fleet size, or the bigger fleets will mostly fail to assemble. New ships are still ordered through the job system, so the quotas in `libraries/jobs.xml` — raised by this mod — remain the ceiling on how many destroyers and fighters can
+**Invasion fleet size** and **Invasion build share** are the two numbers behind how hard a Xenon attack lands. The Xenon use the same invasion machinery as every other faction, and their aggression mood is already at its maximum, so there is no "more aggressive" mood to set. What the mood sets is a strength the invasion must gather in its staging area before it moves — for the Xenon, at least two destroyers' worth, or 0.8 times what they believe defends the target — and a ceiling of twice what they believe defends it, never below the minimum. With no intel on the target the two come out equal, which is common: a debug line reading `138 to 138` is that, not a fault. The fleet size slider scales both. The catch is that an invasion that cannot reach its strength within an hour gives up, and by default only a quarter of each group may be newly built; the rest is commandeered from patrols. Raise the build share along with the fleet size, or the bigger fleets will mostly fail to assemble.
+New ships are still ordered through the job system, so the quotas in `libraries/jobs.xml` — raised by this mod — remain the ceiling on how many destroyers and fighters can
 exist.
 
 **Station attack groups** governs a different fight: the one for sectors the Xenon already hold or contest. Every such sector runs a hold-space goal that forms groups to attack enemy stations inside it, two at a time at the Xenon's aggression. More groups means more of your — or the Commonwealth's — stations in Xenon space come under attack at once.
@@ -115,6 +118,9 @@ exist.
 **Long range raids** turns on expeditions, which the Xenon never get in vanilla: invasions against sectors that are not gate neighbours, owned by any faction with a faction manager. Vanilla caps them at two at a time; they gather for up to two hours, hold the target for an hour, build no station and request no new ships, then retreat. It is the closest thing to the Xenon showing up somewhere unexpected.
 
 **Miner behaviour** covers both Xenon miner hulls, and the energy haulers, because the Xenon "trader" job flies the miner hull too. 0 is vanilla: a Xenon miner, like every Xenon ship, counter-attacks. 1 is what Xenon Hell did — it neither fights nor flees, and keeps mining or delivering under fire. 2 is what AI Xenon Miners did — it flees whatever its morale and shields say, and does not deploy laser towers as it goes. Only the ship's own fight-or-flight decision changes; it still calls for help in every mode.
+
+**Miner and hauler range** and **Unstick impossible builds** are for a Xenon economy that cannot keep up with the sliders above. A Xenon station is built out of the ore, silicon and energy cells delivered to its build storage, and the only ships that deliver them are the faction's miners and energy haulers. In vanilla those work within two gate jumps: a construction farther than that from a mining field or a solar station never gets anything, however many miners the faction has. One evening of play with one shipyard and one wharf per sector left six shipyard sites unsupplied for over thirty hours while more than four hundred Xenon miners worked elsewhere, and since a site under construction counts towards **Constructions in progress**, those six also held up every new one. The range slider widens that radius, and it cuts both ways: the order has no notion of whose space it is, so a wide range sends Xenon miners into anyone's sectors, yours included, to mine and to reach their sites. At
+10 jumps the Xenon miners in player sectors went from 15 to 129 within an hour, 98 of them in one player sector that holds a Xenon construction site. A range of 3 to 5 reaches most of their own space. Separately, the game can plan a Xenon station expansion that ends in a strut of another race, and that build then waits for claytronics and hull parts the Xenon never make. Still queued, it is cancelled and the station stays as it was; already under way, it cannot be cancelled, so it is given just those foreign wares and finishes, strut and all.
 
 ## How it works
 
@@ -130,6 +136,9 @@ Four patches read the settings at the moment the vanilla script evaluates, so no
 The station targets live in the vanilla library `Manage_Stations`, which every faction manager instantiates and re-runs every one to two minutes. The override is inserted **before** the count check rather than after the DLC patch marker, so it lands after every DLC addition whatever the load order, and its last fallback is the DLC-adjusted vanilla value rather than a literal. The `chance` attribute is an expression in the game's schema — vanilla already uses `chance="$DebugChance"` in the same file — so a variable goes in without restructuring the block. The sector ratio reads `$ClaimedSectors`, the list the same library fills in the same cycle.
 
 The invasion and hold-space numbers are locals of a goal instance, recomputed on every evaluation, so they can only be reached by a patch in the place they are computed. Each patch is a single Xenon-gated block; every other faction runs the vanilla code path.
+
+**Miner and hauler range** and **Unstick impossible builds** are not patches either. The first edits `maxbuy` and `maxsell` of the default `MiningRoutine` or `TradeRoutine` order of every Xenon mining ship with `edit_order_param`, the same edit the player makes in the order menu; the range last applied to each ship is remembered in a global table, so each ship is edited once per change and none is touched while the slider is at the vanilla 2. The second walks the build storages of the Xenon stations for builds whose missing wares include one outside ore, silicon and energy cells. It tries `abort_build` — how vanilla cancels the queued builds of a station it deconstructs — and when the build is already under way, which vanilla never aborts or removes, it adds exactly the missing foreign wares to the build storage with `add_cargo` instead. Both run on every load, when either option changes, and every ten minutes, because new job ships start with the vanilla range and a build can get
+stuck at any time.
 
 **Long range raids** is different: `$ExpeditionEnemies` lives on the Xenon faction manager cue and is read on every goal evaluation, so it is written, not patched — on every savegame load, through a child cue that waits for the manager to exist, and again when the option changes. The list is taken from `global.$FactionManagers`, so it only ever names factions that actually run faction logic in this game, whatever DLC is installed.
 
@@ -154,9 +163,11 @@ Each can also be overridden at runtime without touching the file:
 <set_value name="global.$DrJeleXenonStationAttackGroups" exact="4"/>
 <set_value name="global.$DrJeleXenonLongRangeRaids" exact="1"/>
 <set_value name="global.$DrJeleXenonMinerBehaviour" exact="1"/>
+<set_value name="global.$DrJeleXenonTradeRange" exact="5"/>
+<set_value name="global.$DrJeleXenonUnstickImpossibleBuilds" exact="0"/>
 ```
 
-`$DrJeleXenonLongRangeRaids` is only picked up on the next load or when the option changes, because it is applied by writing the manager variable; the others are read live. Turn on **Debug logging** in the options, or set `$DebugChance` to 100 in the configuration cue, to have every evaluation written to the debug log.
+`$DrJeleXenonLongRangeRaids` is only picked up on the next load or when the option changes, because it is applied by writing the manager variable, and the range and build unsticking on the next ten-minute pass; the others are read live. Turn on **Debug logging** in the options, or set `$DebugChance` to 100 in the configuration cue, to have every evaluation written to the debug log.
 
 The static numbers — cargo, quotas, resources — are edited in the patch files under `extension/` and need a reinstall and a restart.
 
@@ -178,6 +189,8 @@ DrJele Xenon Pressure: long range raids 0, expedition enemies []
 DrJele Xenon Pressure: 6 shipyards, desires 7 (31 claimed sectors, 0 per shipyard, 2 of 0 constructions), build chance 5
 DrJele Xenon Pressure: 6 wharfs, desires 7 (31 claimed sectors, 0 per wharf, 2 of 0 constructions), build chance 5
 DrJele Xenon Pressure: invasion of Hatikvah's Choice I wants strength 126 to 252 (fleet size 100)
+DrJele Xenon Pressure: trade range 5 jumps, <n> of <m> miners and haulers updated
+DrJele Xenon Pressure: build at XRW-895 XEN Solar Power Plant I in Emperor's Pride VI is already under way and cannot be cancelled - supplied ['12 Claytronics','44 Hull Parts']
 ```
 
 A patch whose XPath finds nothing is reported without any of that, at startup, by file and selector — so inspect `debuglog.txt` after startup for patch errors mentioning the extension id or the patched filenames. A quiet log alone does not prove that the extension loaded; enable its debug output to confirm that its configuration and evaluated settings are present.

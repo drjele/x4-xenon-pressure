@@ -16,6 +16,9 @@
                 <set_value name="$StationAttackGroups" exact="2" comment="groups that may attack enemy stations in a Xenon or contested sector at once; 2 is vanilla"/>
                 <set_value name="$LongRangeRaids" exact="0" comment="1 sends expeditions against every faction with a faction manager, not only gate neighbours; 0 is vanilla"/>
                 <set_value name="$MinerBehaviour" exact="2" comment="what a Xenon miner does when attacked: 0 fights back (vanilla), 1 keeps flying, 2 flees without deploying laser towers"/>
+                <set_value name="$TradeRange" exact="2" comment="gate jumps within which Xenon miners and energy haulers mine, buy and sell; 2 is vanilla"/>
+                <set_value name="$UnstickImpossibleBuilds" exact="1" comment="1 cancels a queued Xenon station build that waits for wares the Xenon never make, and supplies those wares to one already under way; 0 is vanilla, where such a build waits forever"/>
+                <set_value name="$BuildableWares" exact="[ware.energycells, ware.ore, ware.silicon]" comment="the wares Xenon station builds are supplied with; a build missing anything else is impossible"/>
                 <set_value name="$DebugChance" exact="0" comment="100 writes every evaluation to the debug log"/>
 
                 <set_value name="global.$DrJeleXenonPressureConfig" exact="table[$SectorsPerShipyard  = $SectorsPerShipyard,
@@ -27,8 +30,11 @@
                                                                           $StationAttackGroups = $StationAttackGroups,
                                                                           $LongRangeRaids      = $LongRangeRaids,
                                                                           $MinerBehaviour      = $MinerBehaviour,
+                                                                          $TradeRange          = $TradeRange,
+                                                                          $UnstickImpossibleBuilds = $UnstickImpossibleBuilds,
+                                                                          $BuildableWares      = $BuildableWares,
                                                                           $DebugChance         = $DebugChance]"/>
-                <debug_text text="'DrJele Xenon Pressure: sectors per shipyard %s, sectors per wharf %s, max constructions %s, build chance %s, fleet size %s, build share %s, station attack groups %s, long range raids %s, miner behaviour %s'.[$SectorsPerShipyard, $SectorsPerWharf, $MaxConstructions, $BuildChance, $FleetSize, $BuildShare, $StationAttackGroups, $LongRangeRaids, $MinerBehaviour]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else $DebugChance"/>
+                <debug_text text="'DrJele Xenon Pressure: sectors per shipyard %s, sectors per wharf %s, max constructions %s, build chance %s, fleet size %s, build share %s, station attack groups %s, long range raids %s, miner behaviour %s, trade range %s, unstick impossible builds %s'.[$SectorsPerShipyard, $SectorsPerWharf, $MaxConstructions, $BuildChance, $FleetSize, $BuildShare, $StationAttackGroups, $LongRangeRaids, $MinerBehaviour, $TradeRange, $UnstickImpossibleBuilds]" chance="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else $DebugChance"/>
             </actions>
         </cue>
 
@@ -78,6 +84,103 @@
                 <debug_text text="'DrJele Xenon Pressure: long range raids %s, expedition enemies %s'.[$Raids, $Enemies]" chance="$DebugChance"/>
 
                 <remove_value name="$Enemies"/>
+
+                <include_actions ref="ApplyTradeRange"/>
+                <include_actions ref="UnstickImpossibleBuilds"/>
+            </actions>
+        </library>
+
+        <!-- New job ships start with the vanilla range and builds get stuck at any time, so both passes also run on a timer. -->
+        <cue name="Upkeep" instantiate="true" checkinterval="10min">
+            <conditions>
+                <check_value value="macro.xu_ep2_universe_macro == player.galaxy.macro"/>
+                <check_value value="md.FactionLogic.XenonFactionLogic_Manager.$ExpeditionEnemies?"/>
+            </conditions>
+            <actions>
+                <set_value name="$Config" exact="if global.$DrJeleXenonPressureConfig? then global.$DrJeleXenonPressureConfig else table[]"/>
+                <set_value name="$DebugChance" exact="if global.$DrJeleXenonPressureDebugChance? then global.$DrJeleXenonPressureDebugChance else (if $Config.$DebugChance? then $Config.$DebugChance else 0)"/>
+                <include_actions ref="ApplyTradeRange"/>
+                <include_actions ref="UnstickImpossibleBuilds"/>
+            </actions>
+        </cue>
+
+        <!-- Xenon miners and energy haulers are job ships whose default order carries a gate range, 0 to 2 in vanilla, so a build storage more than two jumps from a mining field or a solar station is never supplied.
+             The range the mod last applied to each ship is kept in global.$DrJeleXenonTradeRangeApplied - MD cannot set a variable on a ship - so each ship is edited once per change and a ship never touched is left alone while the setting is vanilla. An entry stays while its ship exists, whether or not the search found it this time: find_ship does not return every ship on every pass, and dropping the ones it missed would re-edit, and so restart, their orders when they turn up again. -->
+        <library name="ApplyTradeRange">
+            <actions>
+                <set_value name="$Range" exact="(if global.$DrJeleXenonTradeRange? then global.$DrJeleXenonTradeRange else (if $Config.$TradeRange? then $Config.$TradeRange else 2))i"/>
+                <find_ship name="$Ships" owner="faction.xenon" space="player.galaxy" primarypurpose="purpose.mine" multiple="true"/>
+                <set_value name="$Applied" exact="if global.$DrJeleXenonTradeRangeApplied? then global.$DrJeleXenonTradeRangeApplied else table[]"/>
+                <set_value name="$Kept" exact="table[]"/>
+                <do_for_each name="$Ship" in="$Applied.keys.list">
+                    <do_if value="$Ship.exists">
+                        <set_value name="$Kept.{$Ship}" exact="$Applied.{$Ship}"/>
+                    </do_if>
+                </do_for_each>
+                <set_value name="$Edited" exact="0"/>
+                <do_for_each name="$Ship" in="$Ships">
+                    <set_value name="$Order" exact="$Ship.defaultorder"/>
+                    <do_if value="$Order and ($Order.id == 'MiningRoutine' or $Order.id == 'TradeRoutine') and @$Applied.{$Ship} != $Range and ($Applied.{$Ship}? or $Range != 2)">
+                        <do_if value="$Order.isparameditable.maxbuy">
+                            <edit_order_param order="$Order" param="'maxbuy'" value="$Range"/>
+                        </do_if>
+                        <do_if value="$Order.isparameditable.maxsell">
+                            <edit_order_param order="$Order" param="'maxsell'" value="$Range"/>
+                        </do_if>
+                        <set_value name="$Kept.{$Ship}" exact="$Range"/>
+                        <set_value name="$Edited" operation="add"/>
+                    </do_if>
+                </do_for_each>
+                <set_value name="global.$DrJeleXenonTradeRangeApplied" exact="$Kept"/>
+                <debug_text text="'DrJele Xenon Pressure: trade range %s jumps, %s of %s miners and haulers updated'.[$Range, $Edited, $Ships.count]" chance="$DebugChance"/>
+                <remove_value name="$Ships"/>
+                <remove_value name="$Order"/>
+                <remove_value name="$Applied"/>
+                <remove_value name="$Kept"/>
+            </actions>
+        </library>
+
+        <!-- The game can plan a Xenon station expansion that ends in a module of another race, whose build then waits for wares such as claytronics that the Xenon never make.
+             Only builds missing a ware outside $BuildableWares are touched. A queued one is cancelled, the way vanilla cancels the queued builds of a station it deconstructs; one already under way cannot be aborted, and removing it is something vanilla never does, so it is given just the foreign wares it lacks and finishes like any other. -->
+        <library name="UnstickImpossibleBuilds">
+            <actions>
+                <set_value name="$Unstick" exact="(if global.$DrJeleXenonUnstickImpossibleBuilds? then global.$DrJeleXenonUnstickImpossibleBuilds else (if $Config.$UnstickImpossibleBuilds? then $Config.$UnstickImpossibleBuilds else 0))i"/>
+                <do_if value="1 == $Unstick">
+                    <set_value name="$Buildable" exact="if $Config.$BuildableWares? then $Config.$BuildableWares else [ware.energycells, ware.ore, ware.silicon]"/>
+                    <find_station name="$Stations" owner="faction.xenon" space="player.galaxy" multiple="true"/>
+                    <do_for_each name="$Station" in="$Stations">
+                        <set_value name="$Storage" exact="@$Station.buildstorage"/>
+                        <do_if value="$Storage">
+                            <set_value name="$Builds" exact="$Storage.builds.inprogress.clone"/>
+                            <append_list_elements name="$Builds" other="$Storage.builds.queued"/>
+                            <do_for_each name="$Build" in="$Builds">
+                                <set_value name="$Missing" exact="$Storage.neededbuildresources.{$Build}.list"/>
+                                <set_value name="$Impossible" exact="[]"/>
+                                <do_for_each name="$Ware" in="$Missing">
+                                    <do_if value="not $Buildable.indexof.{$Ware}">
+                                        <append_to_list name="$Impossible" exact="$Ware"/>
+                                    </do_if>
+                                </do_for_each>
+                                <do_if value="$Impossible.count gt 0">
+                                    <abort_build container="$Storage" build="$Build"/>
+                                    <do_if value="not $Build.exists or $Build.iscancelled">
+                                        <debug_text text="'DrJele Xenon Pressure: build at %s %s in %s waited for %s the Xenon never make - cancelled'.[$Station.idcode, $Station.knownname, $Station.sector.knownname, $Impossible]" chance="$DebugChance"/>
+                                    </do_if>
+                                    <do_else>
+                                        <set_value name="$Supplied" exact="[]"/>
+                                        <do_for_each name="$Ware" in="$Impossible">
+                                            <add_cargo object="$Storage" ware="$Ware" exact="$Storage.neededbuildresources.{$Build}.{$Ware}.count" result="$Added"/>
+                                            <append_to_list name="$Supplied" exact="'%s %s'.[$Added, $Ware.name]"/>
+                                        </do_for_each>
+                                        <debug_text text="'DrJele Xenon Pressure: build at %s %s in %s is already under way and cannot be cancelled - supplied %s'.[$Station.idcode, $Station.knownname, $Station.sector.knownname, $Supplied]" chance="$DebugChance"/>
+                                    </do_else>
+                                </do_if>
+                            </do_for_each>
+                        </do_if>
+                    </do_for_each>
+                    <remove_value name="$Stations"/>
+                    <remove_value name="$Builds"/>
+                </do_if>
             </actions>
         </library>
 
